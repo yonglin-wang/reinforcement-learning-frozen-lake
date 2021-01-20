@@ -9,7 +9,21 @@ To Be Added!
 ## Demo Code
 Jupyter Notebook To Be Added!
 ## Commandline Usage
-To Be Added!
+To set the working directory to project root and run the default settings of Monte Carlo simulation and see the final rate of succuess (accuracy) of each of the policy trained in each round, use command
+```
+$ cd <path to project root>
+$ python src/MC.py
+```
+
+There are other training settings available. To see a display of agent-environment interaction every 3000 (instead of the default 2000) training episodes in each round, run
+```
+$ python src/MC.py --display --display_every 3000
+```
+
+To explore more options, print the help info by running
+```
+$ python src/MC.py -h
+```
 
 # Code Structure
 Tentative structure, possible modification soon

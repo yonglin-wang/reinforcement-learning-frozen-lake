@@ -3,6 +3,8 @@
 # Author: Yonglin Wang
 # Date: 1/13/2021
 
+import argparse
+
 import gym  # OpenAI Gym
 import numpy as np
 from IPython.display import clear_output
@@ -228,19 +230,35 @@ def mc_first_eps_soft(env,
 
 
 if __name__ == "__main__":
-    ###
-    # params to tune
-    slippery = False    # if slippery, actions will not be executed 100% of the time on Lake
-    episodes = 5000     # number of episodes to train a policy
-    rounds = 4          # total rounds of policy reset-train-test
-    display = True     # whether to display the simulation (very slow)
-    display_every = 2000 # display once after this number of episodes
+    argparser = argparse.ArgumentParser("Monte Carlo Simulation Argparser")
 
-    ###
+    argparser.add_argument(
+        '--episodes', type=int, default=5000, help='number of training episodes. Default: 5000')
+    argparser.add_argument(
+        '--width', type=int, default=8, help='width of square FrozenLake map. Default: 8')
+    argparser.add_argument(
+        '--rounds', type=int, default=4, help='number of rounds, each training a randomly initiated policy. Default: 4')
+    argparser.add_argument(
+        '--slippery', action='store_true', help='whether FrozenLake is slippery (i.e. change in direction may not be excecuted). Default: False')
+    argparser.add_argument(
+        '--display', action='store_true',
+        help='whether to display simulation in console (will slow down training). Default: False')
+    argparser.add_argument(
+        '--display_every', type=int, default=2000, help='display simulation once after this number of episodes, only effective if --display is selected. Default: 2000')
+
+    args = argparser.parse_args()
+
+    # params to tune
+    slippery = args.slippery    # if slippery, actions will not be executed 100% of the time on Lake
+    episodes = args.episodes     # number of episodes to train a policy
+    rounds = args.rounds          # total rounds of policy reset-train-test
+    display = args.display     # whether to display the simulation (very slow)
+    display_every = args.display_every # display once after this number of episodes
+
     round_acc_pair = []
 
     random.seed(RANDOM_SEED)
-    env = gym.make('FrozenLake8x8-v0', is_slippery=slippery)
+    env = gym.make(f'FrozenLake{args.width}x{args.width}-v0', is_slippery=slippery)
     env.seed(RANDOM_SEED)
 
     # Debug with slippery, rand state 2020, 5000 episodes:
@@ -251,3 +269,7 @@ if __name__ == "__main__":
         acc = eval_policy(policy, env)
         round_acc_pair.append((t + 1, acc))
         print(f"Accuracy: {acc}")
+
+    # TODO: save model to exp/
+
+    # TODO: run this script in command under project root
